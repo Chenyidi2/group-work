@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndieHub - Premium Podcast Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="app">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="#">
+                    <img src="assets/logo.png" alt="Logo" width="40" class="me-2 rounded">
+                    IndieHub
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="#hero">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#discovery">Discover</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#pricing">Pricing</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#subscribe">Join Us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            <section id="hero">
+                <div id="podcastCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div v-for="(item, i) in podcasts" :key="'carousel-' + item.id" :class="['carousel-item', { active: i === 0 }]">
+                            <img :src="item.img" class="d-block w-100 carousel-img" :alt="item.name">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                                <h5>{{ item.name }}</h5>
+                                <p>{{ item.text }}</p>
+                                <button class="btn btn-primary btn-sm" @click="playVideo(item.video)">Play Episode</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#podcastCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#podcastCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
+                </div>
+            </section>
+
+            <section id="video-section" class="container my-5 text-center">
+                <h2 class="section-title text-start">Video Player</h2>
+                <div class="ratio ratio-16x9 shadow rounded overflow-hidden mx-auto" style="max-width: 800px;">
+                    <video ref="mainPlayer" controls poster="assets/video_poster.png">
+                        <source src="assets/intro_video.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </section>
+
+            <section id="discovery" class="container my-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="section-title mb-0">Trending Podcasts</h2>
+                    <button class="btn btn-outline-primary btn-sm" @click="compactView = !compactView">
+                        {{ compactView ? 'Show Details' : 'Compact View' }}
+                    </button>
+                </div>
+                <div class="row g-4">
+                    <div v-for="item in podcasts" :key="item.id" class="col-md-4">
+                        <article class="podcast-card h-100 p-3 shadow-sm border">
+                            <img :src="item.img" class="card-img-top rounded" :alt="item.name">
+                            <div class="card-body mt-3">
+                                <h5 class="card-title text-primary">{{ item.name }}</h5>
+                                <p class="card-text text-muted" v-show="!compactView">{{ item.text }}</p>
+                                <button @click="playVideo(item.video)" class="btn btn-sm btn-dark w-100">Listen Now</button>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section id="pricing" class="container my-5">
+                <h2 class="section-title">Plan Comparison</h2>
+                <div class="table-responsive shadow-sm rounded">
+                    <table class="table table-hover bg-white mb-0 text-center align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th class="text-start ps-4">Features</th>
+                                <th style="width: 25%;">Basic (Free)</th>
+                                <th style="width: 25%;">Premium Pro</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-start ps-4">Ad-free Listening</td>
+                                <td class="text-muted">No</td>
+                                <td class="text-primary fw-bold">Yes</td>
+                            </tr>
+                            <tr>
+                                <td class="text-start ps-4">Audio Quality</td>
+                                <td>128 kbps</td>
+                                <td class="fw-bold text-success">320 kbps (Lossless)</td>
+                            </tr>
+                            <tr>
+                                <td class="text-start ps-4">Offline Downloads</td>
+                                <td class="text-muted">No</td>
+                                <td class="text-primary fw-bold">Yes</td>
+                            </tr>
+                            <tr>
+                                <td class="text-start ps-4">Creator Support</td>
+                                <td class="text-muted">Limited</td>
+                                <td class="text-primary fw-bold">Priority</td>
+                            </tr>
+                            <tr>
+                                <td class="text-start ps-4 fw-bold text-dark">Monthly Price</td>
+                                <td class="fs-5 text-muted">$0</td>
+                                <td class="fs-5 fw-bold text-primary">$9.99</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="subscribe" class="bg-light py-5 border-top">
+                <div class="container" style="max-width: 800px;">
+                    <div class="text-center mb-5">
+                        <h2 class="section-title d-inline-block">Join the Community</h2>
+                        <p class="text-muted">Start your journey with us today.</p>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <h5 class="mb-3">1. Pick a Plan</h5>
+                            <div class="list-group">
+                                <label class="list-group-item d-flex justify-content-between align-items-center" :class="{'active': selectedPlan==='Free'}">
+                                    <span><input type="radio" v-model="selectedPlan" value="Free" class="me-2">Basic</span>
+                                    <span class="badge bg-secondary">$0</span>
+                                </label>
+                                <label class="list-group-item d-flex justify-content-between align-items-center" :class="{'active': selectedPlan==='Pro'}">
+                                    <span><input type="radio" v-model="selectedPlan" value="Pro" class="me-2">Premium Pro</span>
+                                    <span class="badge bg-primary">$9.99</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="mb-3">2. Your Details</h5>
+                            <form @submit.prevent="doSubscribe" class="p-3 bg-white border rounded">
+                                <input type="text" v-model="uName" class="form-control mb-2" placeholder="Name" :class="{'is-invalid': errors.name}">
+                                <input type="email" v-model="uEmail" class="form-control mb-3" placeholder="Email" :class="{'is-invalid': errors.email}">
+                                <button class="btn btn-primary w-100">Subscribe</button>
+                                <p v-if="done" class="text-success small mt-2 text-center">Successfully Subscribed!</p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="faq" class="container my-5">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <div class="accordion custom-accordion shadow-sm" id="faqAccordion">
+                    <div v-for="(faq, index) in allFaqs" :key="index" class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#faq'+index">
+                                {{ faq.title }}
+                            </button>
+                        </h2>
+                        <div :id="'faq'+index" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">{{ faq.content }}</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="bg-dark text-white py-4 mt-5">
+            <div class="container text-center">
+                <p class="mb-0">&copy; 2026 IndieHub Podcast Network.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const { createApp } = Vue;
+        createApp({
+            data() {
+                return {
+                    compactView: false,
+                    selectedPlan: 'Free',
+                    uName: '',
+                    uEmail: '',
+                    done: false,
+                    errors: { name: false, email: false },
+                    podcasts: [
+                        { id: 1, name: 'The Silent Beat', text: 'A journey into minimalist soundscapes.', img: 'assets/image_1.png', video: 'assets/podcast_1.mp4' },
+                        { id: 2, name: 'Eco Echo', text: 'Discussions on sustainability and nature.', img: 'assets/image_2.png', video: 'assets/podcast_2.mp4' },
+                        { id: 3, name: 'Creative Mind', text: 'Interviews with world-class artists.', img: 'assets/image_3.png', video: 'assets/podcast_3.mp4' },
+                        { id: 4, name: 'Digital Nomad', text: 'Living and working from anywhere.', img: 'assets/image_4.png', video: 'assets/podcast_4.mp4' },
+                        { id: 5, name: 'Historical Tales', text: 'Forgotten stories from the past.', img: 'assets/image_5.png', video: 'assets/podcast_5.mp4' },
+                        { id: 6, name: 'Modern Science', text: 'Deep dives into astrophysics and beyond.', img: 'assets/image_6.png', video: 'assets/podcast_6.mp4' },
+                        { id: 7, name: 'Cyber Sphere', text: 'The evolution of the digital frontier.', img: 'assets/image_7.png', video: 'assets/podcast_7.mp4' },
+                        { id: 8, name: 'Mindful Moments', text: 'Daily meditation and wellness tips.', img: 'assets/image_8.png', video: 'assets/podcast_8.mp4' },
+                        { id: 9, name: 'Midnight Jazz', text: 'Smooth grooves for late night listening.', img: 'assets/image_9.png', video: 'assets/podcast_9.mp4' }
+                    ],
+                    allFaqs: [
+                        { title: "How do I start listening?", content: "Simply click the 'Listen Now' button on any podcast card to load the video player." },
+                        { title: "Is there a free trial?", content: "Yes! Our Basic plan is free forever, supported by occasional ads." },
+                        { title: "Can I download episodes?", content: "Premium Pro members can download any episode for offline playback via our mobile app." },
+                        { title: "What is the audio quality?", content: "Free users receive 128kbps quality, while Pro users enjoy up to 320kbps Lossless audio." },
+                        { title: "Can I host my own podcast?", content: "Absolutely! IndieHub is open to all creators. You can apply via our 'Creator Studio' link." },
+                        { title: "Which devices are supported?", content: "You can listen on any device via a web browser, or use our apps for iOS and Android." }
+                    ]
+                }
+            },
+            methods: {
+                playVideo(videoSrc) {
+                    const videoPlayer = this.$refs.mainPlayer;
+                    if (videoPlayer) {
+                        videoPlayer.src = videoSrc;
+                        videoPlayer.load();
+                        videoPlayer.play();
+                        document.getElementById('video-section').scrollIntoView({ behavior: 'smooth' });
+                    }
+                },
+                doSubscribe() {
+                    this.errors.name = !this.uName;
+                    this.errors.email = !this.uEmail.includes('@');
+                    if(!this.errors.name && !this.errors.email) {
+                        this.done = true;
+                        setTimeout(() => { this.done = false; }, 3000);
+                    }
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
